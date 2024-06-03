@@ -10,6 +10,10 @@ app.use(cors());
 
 // application routes
 app.use("/api/products", ProductsRoutes);
+//  route not found
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: "Route Not found" });
+});
 
 app.get("/", (req: Request, res: Response) => {
   try {
