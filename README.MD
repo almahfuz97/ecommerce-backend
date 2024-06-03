@@ -32,7 +32,7 @@ This is a simple Express.js application connected to a MongoDB database, built w
    Create a `.env` file in the root directory and add your environment variables:
 
    ```env
-   PORT=3000
+   PORT=5000
    DATABASE_URL=mongodb://localhost:27017/your-database-name
    ```
 
