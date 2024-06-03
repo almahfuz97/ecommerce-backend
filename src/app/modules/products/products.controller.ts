@@ -178,6 +178,23 @@ const searchProducts = async (
   }
 };
 
+const inventoryChecking = async (productId: string, orderQuantity: number) => {
+  try {
+    const product = await ProductsModel.findById(productId);
+    if (product) {
+      if (!product.inventory.inStock)
+        return "Not available in stock. Please try another";
+      if (product.inventory.quantity < orderQuantity) {
+        return `${orderQuantity} products are not available in the stock. Only ${product.inventory.quantity} is left`;
+      }
+    } else {
+      return "No product found with this ID";
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const updateInventoryWithOrder = async (
   productId: string,
   orderQuantity: number,
@@ -185,25 +202,20 @@ const updateInventoryWithOrder = async (
   try {
     const product = await ProductsModel.findById(productId);
     if (product) {
-      if (!product.inventory.inStock)
-        return "Not available in stock. Please try another";
-      if (product.inventory.quantity >= orderQuantity) {
-        if (product.inventory.quantity === orderQuantity) {
-          product.inventory.quantity -= orderQuantity;
-          product.inventory.inStock = false;
-          await product.save();
-        } else {
-          product.inventory.quantity -= orderQuantity;
-          await product.save();
-        }
+      if (product.inventory.quantity === orderQuantity) {
+        product.inventory.quantity -= orderQuantity;
+        product.inventory.inStock = false;
+        await product.save();
       } else {
-        return `${orderQuantity} products are not available in the stock. Only ${product.inventory.quantity} is left`;
+        product.inventory.quantity -= orderQuantity;
+        await product.save();
       }
     }
   } catch (error) {
     console.log(error);
   }
 };
+
 export const ProductsController = {
   getAllProducts,
   createProduct,
@@ -212,4 +224,5 @@ export const ProductsController = {
   deleteProductByID,
   searchProducts,
   updateInventoryWithOrder,
+  inventoryChecking,
 };
