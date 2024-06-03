@@ -13,23 +13,23 @@ app.use(cors());
 app.use("/api/products", ProductsRoutes);
 app.use("/api/orders", OrderRoutes);
 //  route not found
-app.use((req, res) => {
-  res.status(404).json({ success: false, message: "Route Not found" });
-});
 
 app.get("/", (req: Request, res: Response) => {
-  try {
-    res.status(200).json({
-      success: true,
-      message: "Successfully executed",
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "An error occured",
-      error: error,
-    });
-  }
+    try {
+        res.status(200).json({
+            success: true,
+            message: "Successfully executed",
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "An error occured",
+            error: error,
+        });
+    }
 });
 
+app.use((req, res) => {
+    res.status(404).json({ success: false, message: "Route Not found" });
+});
 export default app;
