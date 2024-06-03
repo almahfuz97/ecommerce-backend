@@ -88,6 +88,11 @@ const getOrderForUserEmail = async (
 ) => {
   try {
     const result = await OrderServices.getOrdersForUserEmailFromDB(email);
+    if (result.length < 1)
+      return res.status(404).json({
+        success: false,
+        message: "Order not found",
+      });
     res.status(200).json({
       success: true,
       message: "Orders fetched successfully for user email!",

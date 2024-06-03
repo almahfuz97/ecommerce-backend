@@ -183,9 +183,9 @@ const inventoryChecking = async (productId: string, orderQuantity: number) => {
     const product = await ProductsModel.findById(productId);
     if (product) {
       if (!product.inventory.inStock)
-        return "Not available in stock. Please try another";
+        return "Insufficient quantity available in inventory";
       if (product.inventory.quantity < orderQuantity) {
-        return `${orderQuantity} products are not available in the stock. Only ${product.inventory.quantity} is left`;
+        return `Insufficient quantity available in inventory`;
       }
     } else {
       return "No product found with this ID";
