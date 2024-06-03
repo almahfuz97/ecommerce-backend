@@ -75,8 +75,40 @@ const createProduct = async (req: Request, res: Response) => {
     }
   }
 };
+// update a product by id
+const updateProductByID = async (req: Request, res: Response) => {
+  try {
+    const { productId } = req.params;
+    const zodPartialParsedData = zodProductSchema.partial().parse(req.body);
+    const result = await ProductServices.updateProductInDB(
+      productId,
+      zodPartialParsedData,
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Product updated successfully!",
+      data: result,
+    });
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      res.status(400).json({
+        success: false,
+        message: error.errors,
+      });
+    } else {
+      console.log(error);
+      res.status(500).json({
+        success: false,
+        message: "Internal server error",
+        data: error,
+      });
+    }
+  }
+};
 export const ProductsController = {
   getAllProducts,
   createProduct,
   getProductById,
+  updateProductByID,
 };
