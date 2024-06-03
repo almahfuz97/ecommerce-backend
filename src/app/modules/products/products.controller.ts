@@ -3,6 +3,7 @@ import { ProductServices } from "./products.service";
 import { zodProductSchema } from "./product.validation";
 import { z } from "zod";
 import { isEmpty, isEqual, pick } from "lodash";
+import { ProductsModel } from "./product.model";
 
 const getAllProducts = async (req: Request, res: Response) => {
   try {
@@ -33,7 +34,6 @@ const getAllProducts = async (req: Request, res: Response) => {
 const getProductById = async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
-    console.log(productId);
     const result = await ProductServices.getProductByIDFromDB(productId);
     if (result)
       res.status(200).json({
@@ -161,7 +161,6 @@ const searchProducts = async (
 ) => {
   try {
     const result = await ProductServices.searchProductsFromDB(searchQuery);
-    console.log(result);
     if (isEmpty(result))
       return res.json({ success: true, message: "No product found" });
     res.status(200).json({
@@ -178,6 +177,33 @@ const searchProducts = async (
     });
   }
 };
+
+const updateInventoryWithOrder = async (
+  productId: string,
+  orderQuantity: number,
+) => {
+  try {
+    const product = await ProductsModel.findById(productId);
+    if (product) {
+      if (!product.inventory.inStock)
+        return "Not available in stock. Please try another";
+      if (product.inventory.quantity >= orderQuantity) {
+        if (product.inventory.quantity === orderQuantity) {
+          product.inventory.quantity -= orderQuantity;
+          product.inventory.inStock = false;
+          await product.save();
+        } else {
+          product.inventory.quantity -= orderQuantity;
+          await product.save();
+        }
+      } else {
+        return `${orderQuantity} products are not available in the stock. Only ${product.inventory.quantity} is left`;
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
 export const ProductsController = {
   getAllProducts,
   createProduct,
@@ -185,4 +211,5 @@ export const ProductsController = {
   updateProductByID,
   deleteProductByID,
   searchProducts,
+  updateInventoryWithOrder,
 };

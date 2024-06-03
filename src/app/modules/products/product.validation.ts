@@ -10,7 +10,7 @@ const InventorySchema = z.object({
   inStock: z.boolean(),
 });
 
-// Define Zod schema for Product
+// Zod schema for Product
 export const zodProductSchema = z.object({
   name: z.string().min(1),
   description: z.string(),

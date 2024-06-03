@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from "express";
 import cors from "cors";
 import { ProductsRoutes } from "./app/modules/products/products.routes";
+import { OrderRoutes } from "./app/modules/orders/order.routes";
 
 const app: Application = express();
 
@@ -10,6 +11,7 @@ app.use(cors());
 
 // application routes
 app.use("/api/products", ProductsRoutes);
+app.use("/api/orders", OrderRoutes);
 //  route not found
 app.use((req, res) => {
   res.status(404).json({ success: false, message: "Route Not found" });

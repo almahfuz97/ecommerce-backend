@@ -42,7 +42,7 @@ const searchProductsFromDB = async (queryTerm: string) => {
     });
     return result;
   } catch (error) {
-    console.log({ message: "the problem is here", error });
+    console.log(error);
   }
 };
 export const ProductServices = {
